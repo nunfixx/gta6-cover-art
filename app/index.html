@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Cover Studio — GTA VI-style cover art maker</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">NCS</span>
+    <div>
+      <h1>Neon Cover Studio</h1>
+      <p>Turn your photos into GTA VI-style cover art — offline, on your machine.</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="exportAllBtn" type="button" class="btn ghost">Export all 3 sizes</button>
+    <button id="exportBtn" type="button" class="btn primary">Export PNG</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="controls" aria-label="Cover controls">
+    <div class="card">
+      <h2>1 · Photos</h2>
+      <p class="hint">Click a photo to put it in the selected panel. Your files never leave this machine.</p>
+      <div id="tray" class="tray" role="listbox" aria-label="Photos"></div>
+      <input id="addPhoto" type="file" accept="image/*" multiple hidden>
+      <button id="addPhotoBtn" type="button" class="btn wide">+ Add your photos</button>
+    </div>
+
+    <div class="card">
+      <h2>2 · Layout &amp; grade</h2>
+      <div class="btn-row" role="group" aria-label="Layout">
+        <button type="button" class="btn toggle active" data-group="layout" data-value="poster">Poster</button>
+        <button type="button" class="btn toggle" data-group="layout" data-value="grid">Four panel</button>
+        <button type="button" class="btn toggle" data-group="layout" data-value="hero">Hero</button>
+      </div>
+      <div class="btn-row" role="group" aria-label="Colour grade">
+        <button type="button" class="btn toggle active" data-group="grade" data-value="sunset">Sunset</button>
+        <button type="button" class="btn toggle" data-group="grade" data-value="neon">Neon</button>
+        <button type="button" class="btn toggle" data-group="grade" data-value="noir">Noir</button>
+        <button type="button" class="btn toggle" data-group="grade" data-value="clean">Clean</button>
+      </div>
+      <div class="btn-row" role="group" aria-label="Export size">
+        <button type="button" class="btn toggle" data-group="size" data-value="square">1080 × 1080</button>
+        <button type="button" class="btn toggle" data-group="size" data-value="portrait">1080 × 1350</button>
+        <button type="button" class="btn toggle active" data-group="size" data-value="landscape">1920 × 1080</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3 · Caption</h2>
+      <label class="field">
+        <span>Title</span>
+        <input id="caption" type="text" value="VICE CITY" maxlength="28" autocomplete="off">
+      </label>
+      <div class="preset-row">
+        <button type="button" class="btn chip preset-btn" data-caption="VICE CITY">VICE CITY</button>
+        <button type="button" class="btn chip preset-btn" data-caption="NEON NIGHTS">NEON NIGHTS</button>
+        <button type="button" class="btn chip preset-btn" data-caption="SUNSET DRIVE">SUNSET DRIVE</button>
+        <button type="button" class="btn chip preset-btn" data-caption="OCEAN DRIVE">OCEAN DRIVE</button>
+      </div>
+      <label class="field">
+        <span>Subtitle</span>
+        <input id="subtitle" type="text" value="WELCOME TO PARADISE" maxlength="48" autocomplete="off">
+      </label>
+      <div class="swatches" role="group" aria-label="Caption colour">
+        <button type="button" class="swatch active" data-group="color" data-value="white" style="--c:#ffffff" aria-label="White"></button>
+        <button type="button" class="swatch" data-group="color" data-value="sun" style="--c:#ffd94d" aria-label="Sun yellow"></button>
+        <button type="button" class="swatch" data-group="color" data-value="pink" style="--c:#ff5fa2" aria-label="Neon pink"></button>
+        <button type="button" class="swatch" data-group="color" data-value="cyan" style="--c:#4de8ff" aria-label="Cyan"></button>
+      </div>
+      <label class="slider">
+        <span>Title size <b id="captionSizeVal">100%</b></span>
+        <input id="captionSize" type="range" min="0.7" max="1.3" step="0.05" value="1">
+      </label>
+      <label class="check"><input id="captionTop" type="checkbox"> Title at the top</label>
+    </div>
+
+    <div class="card">
+      <h2>4 · Selected panel</h2>
+      <p id="panelLabel" class="hint">Panel 1 of 3</p>
+      <p class="hint">Click a panel in the preview to select it. Drag inside it to move its photo, scroll to zoom.</p>
+      <label class="slider">
+        <span>Zoom <b id="zoomVal">100%</b></span>
+        <input id="zoom" type="range" min="1" max="2.5" step="0.05" value="1">
+      </label>
+      <label class="slider">
+        <span>Move sideways</span>
+        <input id="panX" type="range" min="-0.5" max="0.5" step="0.01" value="0">
+      </label>
+      <label class="slider">
+        <span>Move up / down</span>
+        <input id="panY" type="range" min="-0.5" max="0.5" step="0.01" value="0">
+      </label>
+      <label class="check"><input id="frame" type="checkbox" checked> Ivory poster frame</label>
+      <label class="check"><input id="grain" type="checkbox" checked> Film grain</label>
+    </div>
+  </section>
+
+  <section class="preview" aria-label="Live preview">
+    <div class="preview-head">
+      <h2>Live preview</h2>
+      <p id="status" role="status">Loading…</p>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="cover" width="900" height="506"></canvas>
+    </div>
+    <p class="fineprint">Offline by design: this page makes no network request, and your photos are read locally and never uploaded. Demo photos are original flat-vector scenes drawn for this app. No Rockstar Games logo, artwork, character or font is used anywhere.</p>
+  </section>
+</main>
+
+<script type="module" src="./src/app.js"></script>
+</body>
+</html>
